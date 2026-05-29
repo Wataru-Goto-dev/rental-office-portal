@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Offce Port</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#0f0e0c;--ink2:#4a4840;--ink3:#8a8780;
+  --bg:#f7f5f0;--bg2:#edeae3;
+  --accent:#2a5c45;--accent2:#4a9e78;--accent-light:#e8f4ef;
+  --warm:#c8773a;--warm-light:#fdf3eb;
+  --border:#dedad3;--white:#fff;
+  --r:14px;--r-sm:8px;
+  --sh:0 2px 12px rgba(15,14,12,.08);
+  --sh-lg:0 8px 32px rgba(15,14,12,.14);
+  --nav-h:56px;
+  --bottom-h:68px;
+}
+html{-webkit-tap-highlight-color:transparent;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.7;overflow-x:hidden;}
+
+/* ── PAGE SYSTEM ── */
+.page{display:none;}
+.page.active{display:block;}
+
+/* ── TOP NAV ── */
+.top-nav{
+  position:sticky;top:0;z-index:200;
+  height:var(--nav-h);
+  background:rgba(247,245,240,.96);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;
+}
+.nav-logo{display:flex;align-items:baseline;gap:3px;cursor:pointer;}
+.nav-logo-mark{font-family:'DM Serif Display',serif;font-size:20px;color:var(--accent);}
+.nav-logo-sub{font-size:10px;color:var(--ink3);letter-spacing:.04em;}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-icon-btn{
+  width:38px;height:38px;border-radius:50%;border:1.5px solid var(--border);
+  background:white;display:flex;align-items:center;justify-content:center;
+  font-size:17px;cursor:pointer;
+}
+.nav-cta{
+  padding:8px 16px;background:var(--accent);color:white;
+  border:none;border-radius:20px;font-family:inherit;font-size:12px;font-weight:700;
+  cursor:pointer;letter-spacing:.02em;
+}
+
+/* ── BOTTOM TAB ── */
+.bottom-tab{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  height:var(--bottom-h);
+  background:rgba(247,245,240,.97);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.tab-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  gap:3px;padding:8px 0;cursor:pointer;border:none;background:none;
+  font-family:inherit;transition:all .15s;
+}
+.tab-icon{font-size:20px;line-height:1;}
+.tab-label{font-size:10px;color:var(--ink3);font-weight:500;letter-spacing:.02em;}
+.tab-btn.active .tab-icon{filter:none;}
+.tab-btn.active .tab-label{color:var(--accent);font-weight:700;}
+.tab-btn.active::after{
+  content:'';position:absolute;bottom:calc(var(--bottom-h) - 3px);
+  width:24px;height:3px;background:var(--accent);border-radius:2px;
+}
+.tab-btn{position:relative;}
+
+/* ── SHARED LAYOUT ── */
+.pb-safe{padding-bottom:calc(var(--bottom-h) + 16px);}
+
+/* ══════════ HOME ══════════ */
+/* HERO */
+.hero{
+  background:var(--accent);
+  padding:28px 16px 0;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 20% 60%,rgba(74,158,120,.5) 0%,transparent 55%),
+    radial-gradient(ellipse at 85% 10%,rgba(200,119,58,.25) 0%,transparent 45%);
+}
+.hero-inner{position:relative;}
+.hero-eyebrow{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:10px;}
+.hero h1{font-family:'DM Serif Display',serif;font-size:28px;line-height:1.2;color:white;margin-bottom:8px;}
+.hero h1 em{font-style:italic;color:#9ddcbb;}
+.hero-sub{font-size:12px;color:rgba(255,255,255,.72);margin-bottom:20px;line-height:1.7;}
+.hero-stats{display:flex;gap:0;margin-bottom:20px;}
+.hero-stat{flex:1;text-align:center;padding:10px 0;border-right:1px solid rgba(255,255,255,.15);}
+.hero-stat:last-child{border-right:none;}
+.hero-stat-num{font-family:'DM Serif Display',serif;font-size:20px;color:white;}
+.hero-stat-label{font-size:9px;color:rgba(255,255,255,.58);margin-top:2px;}
+
+/* SEARCH CARD */
+.search-card{
+  background:white;border-radius:var(--r) var(--r) 0 0;
+  padding:16px 16px 0;
+  box-shadow:var(--sh-lg);
+  position:relative;
+}
+.search-tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none;}
+.search-tabs::-webkit-scrollbar{display:none;}
+.search-tab{
+  flex-shrink:0;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;
+  border:1.5px solid var(--border);color:var(--ink2);background:white;cursor:pointer;
+  font-family:inherit;white-space:nowrap;transition:all .15s;
+}
+.search-tab.active{background:var(--accent);color:white;border-color:var(--accent);}
+.search-row{display:flex;gap:8px;margin-bottom:10px;}
+.search-select{
+  flex:1;padding:11px 12px;border:1.5px solid var(--border);border-radius:var(--r-sm);
+  font-family:inherit;font-size:13px;color:var(--ink);background:var(--bg);
+  appearance:none;outline:none;
+}
+.search-select:focus{border-color:var(--accent);}
+.search-btn-full{
+  width:100%;padding:13px;background:var(--warm);color:white;
+  border:none;border-radius:var(--r-sm);font-family:inherit;font-size:14px;font-weight:700;
+  cursor:pointer;margin-bottom:16px;letter-spacing:.02em;
+}
+
+/* SECTION */
+.section{padding:24px 16px;}
+.sec-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.sec-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ink);}
+.sec-title span{color:var(--accent);}
+.sec-more{font-size:12px;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:2px;}
+
+/* TYPE GRID */
+.type-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.type-card{
+  background:white;border:1.5px solid var(--border);border-radius:var(--r);
+  padding:16px 12px;text-align:center;cursor:pointer;
+  transition:all .15s;-webkit-tap-highlight-color:transparent;
+}
+.type-card:active{transform:scale(.97);}
+.type-icon{font-size:24px;margin-bottom:6px;}
+.type-name{font-size:13px;font-weight:700;color:var(--ink);}
+.type-count{font-size:11px;color:var(--ink3);margin-top:2px;}
+
+/* AREA CHIPS */
+.area-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;}
+.area-scroll::-webkit-scrollbar{display:none;}
+.area-chip{
+  flex-shrink:0;padding:8px 16px;border-radius:20px;
+  border:1.5px solid var(--border);background:white;
+  font-size:12px;color:var(--ink2);cursor:pointer;white-space:nowrap;
+  transition:all .15s;
+}
+.area-chip.active,.area-chip:active{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
+
+/* CARD (horizontal on mobile) */
+.card-list{display:flex;flex-direction:column;gap:12px;}
+.office-card{
+  background:white;border-radius:var(--r);overflow:hidden;
+  box-shadow:var(--sh);cursor:pointer;border:1px solid var(--border);
+  display:flex;transition:all .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.office-card:active{transform:scale(.99);}
+.card-thumb{
+  width:110px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:40px;position:relative;
+}
+.card-badge{
+  position:absolute;top:8px;left:8px;
+  background:white;color:var(--accent);
+  font-size:10px;font-weight:700;padding:2px 7px;
+  border-radius:10px;border:1px solid var(--accent-light);
+}
+.card-badge-warm{background:var(--warm-light);color:var(--warm);border-color:#f0d5be;}
+.card-body{flex:1;padding:12px 12px 12px 10px;min-width:0;}
+.card-area{font-size:10px;color:var(--ink3);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-name{font-weight:700;font-size:14px;margin-bottom:6px;line-height:1.3;}
+.card-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;}
+.tag{font-size:10px;padding:2px 7px;border-radius:4px;background:var(--bg2);color:var(--ink2);}
+.tag-green{background:var(--accent-light);color:var(--accent);}
+.card-price-row{display:flex;justify-content:space-between;align-items:center;}
+.card-price-num{font-family:'DM Serif Display',serif;font-size:18px;color:var(--ink);}
+.card-price-unit{font-size:10px;color:var(--ink3);}
+.card-avail{font-size:10px;color:var(--accent2);font-weight:700;display:flex;align-items:center;gap:3px;}
+.dot-green{width:6px;height:6px;background:var(--accent2);border-radius:50%;display:inline-block;}
+
+/* HORIZONTAL SCROLL CARDS */
+.card-scroll{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;}
+.card-scroll::-webkit-scrollbar{display:none;}
+.card-scroll .office-card{flex-direction:column;width:200px;flex-shrink:0;}
+.card-scroll .card-thumb{width:100%;height:120px;}
+.card-scroll .card-body{padding:10px;}
+
+/* FEATURES */
+.feature-list{display:flex;flex-direction:column;gap:0;}
+.feature-item{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);}
+.feature-item:last-child{border-bottom:none;}
+.feature-icon{font-size:28px;flex-shrink:0;margin-top:2px;}
+.feature-text h4{font-size:14px;font-weight:700;margin-bottom:3px;}
+.feature-text p{font-size:12px;color:var(--ink3);line-height:1.6;}
+
+/* ══════════ LIST PAGE ══════════ */
+/* FILTER HEADER */
+.list-topbar{
+  background:white;border-bottom:1px solid var(--border);
+  padding:10px 16px;
+  display:flex;gap:8px;align-items:center;
+}
+.result-count{font-size:12px;color:var(--ink3);white-space:nowrap;}
+.filter-scroll{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1;}
+.filter-scroll::-webkit-scrollbar{display:none;}
+.filter-chip{
+  flex-shrink:0;padding:6px 12px;border-radius:16px;
+  border:1.5px solid var(--border);background:white;
+  font-size:11px;font-weight:500;color:var(--ink2);cursor:pointer;
+  font-family:inherit;white-space:nowrap;transition:all .15s;
+}
+.filter-chip.active{background:var(--accent);color:white;border-color:var(--accent);}
+.filter-icon-btn{
+  flex-shrink:0;width:34px;height:34px;border-radius:var(--r-sm);
+  border:1.5px solid var(--border);background:white;
+  display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;
+}
+.list-content{padding:16px 16px 0;}
+
+/* DRAWER FILTER */
+.drawer-overlay{
+  position:fixed;inset:0;background:rgba(15,14,12,.5);z-index:300;
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.drawer-overlay.open{opacity:1;pointer-events:all;}
+.filter-drawer{
+  position:fixed;bottom:0;left:0;right:0;z-index:301;
+  background:white;border-radius:20px 20px 0 0;
+  padding:0 0 calc(env(safe-area-inset-bottom) + 16px);
+  transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);
+  max-height:85vh;overflow-y:auto;
+}
+.filter-drawer.open{transform:translateY(0);}
+.drawer-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 16px;}
+.drawer-title{font-size:16px;font-weight:700;padding:0 16px 16px;border-bottom:1px solid var(--border);}
+.drawer-section{padding:16px 16px 0;}
+.drawer-sec-title{font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+.drawer-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px;}
+.drawer-chip{
+  padding:7px 14px;border-radius:20px;border:1.5px solid var(--border);
+  background:white;font-size:12px;color:var(--ink2);cursor:pointer;font-family:inherit;
+  transition:all .15s;
+}
+.drawer-chip.active{background:var(--accent);color:white;border-color:var(--accent);}
+.price-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;}
+.price-input{padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:13px;font-family:inherit;outline:none;width:100%;}
+.price-input:focus{border-color:var(--accent);}
+.drawer-apply{
+  margin:16px 16px 0;width:calc(100% - 32px);
+  padding:14px;background:var(--accent);color:white;border:none;
+  border-radius:var(--r-sm);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;
+}
+
+/* ══════════ DETAIL PAGE ══════════ */
+.detail-back{
+  display:flex;align-items:center;gap:6px;
+  padding:14px 16px;font-size:13px;color:var(--ink3);cursor:pointer;
+  border-bottom:1px solid var(--border);background:white;
+}
+.detail-gallery-wrap{position:relative;overflow:hidden;}
+.gallery-main-img{
+  width:100%;height:220px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:72px;background:var(--bg2);
+}
+.gallery-thumbs{display:flex;gap:4px;padding:4px;background:white;}
+.g-thumb{
+  flex:1;height:54px;display:flex;align-items:center;justify-content:center;
+  font-size:18px;background:var(--bg2);border-radius:6px;cursor:pointer;
+  border:2px solid transparent;transition:border-color .15s;
+}
+.g-thumb.active{border-color:var(--accent);}
+.detail-main{padding:16px;}
+.detail-badges{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.d-badge{font-size:11px;padding:4px 10px;border-radius:14px;background:var(--accent-light);color:var(--accent);font-weight:700;}
+.d-badge-warm{background:var(--warm-light);color:var(--warm);}
+.detail-name{font-family:'DM Serif Display',serif;font-size:24px;line-height:1.2;margin-bottom:8px;}
+.detail-addr{font-size:12px;color:var(--ink3);display:flex;align-items:center;gap:4px;margin-bottom:16px;}
+.detail-highlights{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;}
+.hl-box{background:var(--bg2);border-radius:var(--r-sm);padding:10px 8px;text-align:center;}
+.hl-icon{font-size:18px;margin-bottom:3px;}
+.hl-label{font-size:9px;color:var(--ink3);}
+.hl-val{font-size:12px;font-weight:700;color:var(--ink);line-height:1.2;}
+.detail-sec{margin-bottom:24px;}
+.detail-sec-title{font-size:14px;font-weight:700;padding-bottom:8px;border-bottom:2px solid var(--border);margin-bottom:12px;}
+.detail-desc{font-size:13px;color:var(--ink2);line-height:1.8;}
+.amenity-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.amenity{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2);padding:8px 10px;background:var(--bg);border-radius:var(--r-sm);}
+/* PLAN CARDS */
+.plan-cards{display:flex;flex-direction:column;gap:10px;}
+.plan-card{background:var(--bg);border-radius:var(--r-sm);padding:14px;}
+.plan-name{font-size:13px;font-weight:700;margin-bottom:8px;}
+.plan-row{display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--border);}
+.plan-row:last-child{border-bottom:none;}
+.plan-label{color:var(--ink3);}
+.plan-price{font-weight:700;color:var(--accent);font-size:14px;}
+/* ACCESS */
+.access-list{list-style:none;}
+.access-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.access-item:last-child{border-bottom:none;}
+.access-dot{width:22px;height:22px;border-radius:50%;background:var(--accent);color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.map-ph{height:160px;background:var(--bg2);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink3);margin-top:12px;border:1px dashed var(--border);}
+/* REVIEW */
+.review-card{background:var(--bg);border-radius:var(--r-sm);padding:14px;margin-bottom:10px;}
+.review-head{display:flex;justify-content:space-between;margin-bottom:8px;}
+.review-avatar{width:30px;height:30px;border-radius:50%;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--accent);}
+.review-stars{color:#f0a500;font-size:12px;}
+.review-date{font-size:10px;color:var(--ink3);}
+.review-text{font-size:12px;color:var(--ink2);line-height:1.7;}
+
+/* STICKY CTA */
+.sticky-cta{
+  position:fixed;bottom:0;left:0;right:0;z-index:150;
+  background:white;border-top:1px solid var(--border);
+  padding:12px 16px calc(env(safe-area-inset-bottom) + 12px);
+  display:flex;gap:10px;align-items:center;
+}
+.cta-price-block{}
+.cta-price-from{font-size:10px;color:var(--ink3);}
+.cta-price-big{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ink);line-height:1;}
+.cta-price-mo{font-size:10px;color:var(--ink3);}
+.cta-btns{flex:1;display:flex;gap:8px;}
+.cta-btn-main{
+  flex:1;padding:13px 0;background:var(--accent);color:white;
+  border:none;border-radius:var(--r-sm);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;
+}
+.cta-btn-sub{
+  padding:13px 14px;background:white;color:var(--ink);
+  border:1.5px solid var(--border);border-radius:var(--r-sm);
+  font-family:inherit;font-size:18px;cursor:pointer;
+}
+
+/* FULL INFO SHEET */
+.info-sheet{
+  position:fixed;bottom:0;left:0;right:0;z-index:310;
+  background:white;border-radius:20px 20px 0 0;
+  padding:0 0 calc(env(safe-area-inset-bottom) + 16px);
+  transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);
+  max-height:85vh;overflow-y:auto;
+}
+.info-sheet.open{transform:translateY(0);}
+.info-sheet-inner{padding:0 16px;}
+.info-section{margin-bottom:20px;}
+.info-label{font-size:11px;color:var(--ink3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em;}
+.info-tel{font-family:'DM Serif Display',serif;font-size:28px;color:var(--ink);display:block;text-decoration:none;margin-bottom:4px;}
+.info-hours{font-size:12px;color:var(--ink3);}
+.info-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.info-row:last-child{border-bottom:none;}
+.info-key{color:var(--ink3);}
+.info-val{font-weight:700;}
+.info-avail{display:flex;align-items:center;gap:6px;padding:12px;background:var(--accent-light);border-radius:var(--r-sm);margin-bottom:12px;}
+.avail-dot{width:8px;height:8px;background:var(--accent2);border-radius:50%;}
+.avail-text{font-size:13px;color:var(--accent);font-weight:700;}
+.sheet-btn-full{
+  display:block;width:100%;padding:14px;
+  background:var(--accent);color:white;border:none;
+  border-radius:var(--r-sm);font-family:inherit;font-size:14px;font-weight:700;
+  cursor:pointer;margin-bottom:10px;text-align:center;
+}
+.sheet-btn-outline{
+  display:block;width:100%;padding:13px;
+  background:white;color:var(--ink);
+  border:1.5px solid var(--border);border-radius:var(--r-sm);
+  font-family:inherit;font-size:13px;cursor:pointer;text-align:center;
+}
+.sheet-note{font-size:11px;color:var(--ink3);text-align:center;margin-top:10px;}
+
+/* FOOTER */
+footer{background:var(--ink);color:rgba(255,255,255,.55);padding:32px 16px 24px;}
+.footer-logo{font-family:'DM Serif Display',serif;font-size:22px;color:white;margin-bottom:8px;}
+.footer-desc{font-size:12px;line-height:1.7;margin-bottom:24px;}
+.footer-links{display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;margin-bottom:20px;}
+.footer-links a{font-size:12px;color:rgba(255,255,255,.5);text-decoration:none;}
+.footer-bottom{font-size:11px;color:rgba(255,255,255,.25);border-top:1px solid rgba(255,255,255,.08);padding-top:16px;}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:calc(var(--bottom-h) + 12px);left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:white;padding:10px 20px;border-radius:24px;
+  font-size:13px;z-index:999;opacity:0;transition:all .3s;pointer-events:none;
+  white-space:nowrap;max-width:calc(100vw - 32px);
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* DESKTOP ENHANCEMENTS */
+@media(min-width:640px){
+  .hero{padding:48px 32px 0;}
+  .hero h1{font-size:38px;}
+  .search-card{padding:24px 24px 0;}
+  .search-row{display:grid;grid-template-columns:1fr 1fr;}
+  .section{padding:32px 24px;}
+  .type-row{grid-template-columns:repeat(4,1fr);}
+  .card-list{display:grid;grid-template-columns:repeat(2,1fr);}
+  .office-card{flex-direction:column;}
+  .card-thumb{width:100%;height:140px;}
+  .card-body{padding:14px;}
+  .detail-gallery-wrap .gallery-main-img{height:300px;}
+  .detail-highlights{grid-template-columns:repeat(3,1fr);}
+  .amenity-grid{grid-template-columns:repeat(3,1fr);}
+  .sticky-cta{max-width:640px;left:50%;transform:translateX(-50%);border-radius:var(--r) var(--r) 0 0;border:1px solid var(--border);}
+}
+@media(min-width:1024px){
+  .card-list{grid-template-columns:repeat(3,1fr);}
+  .bottom-tab{max-width:1024px;left:50%;transform:translateX(-50%);border-radius:var(--r) var(--r) 0 0;border:1px solid var(--border);}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <div class="nav-logo" onclick="showPage('home')">
+    <span class="nav-logo-mark">OfficeBase</span>
+    <span class="nav-logo-sub"></span>
+  </div>
+  <div class="nav-right">
+    <div class="nav-icon-btn" onclick="showToast('お気に入り機能は準備中です')">🔖</div>
+    <button class="nav-cta" onclick="showToast('掲載お問い合わせを受け付けました')">無料掲載</button>
+  </div>
+</nav>
+
+<!-- ══════════ HOME ══════════ -->
+<div class="page active pb-safe" id="page-home">
+
+  <div class="hero">
+    <div class="hero-inner">
+      <p class="hero-eyebrow">Tokyo's No.1 Office Search</p>
+      <h1>あなたに<em>ぴったり</em>の<br>オフィスが見つかる</h1>
+      <p class="hero-sub">1名から入居可能なレンタルオフィス・コワーキングを<br>エリア・人数・料金で簡単比較</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num">1,200+</div>
+          <div class="hero-stat-label">掲載物件</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">23区</div>
+          <div class="hero-stat-label">対応エリア</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">¥0</div>
+          <div class="hero-stat-label">仲介手数料</div>
+        </div>
+      </div>
+    </div>
+    <div class="search-card">
+      <div class="search-tabs">
+        <button class="search-tab active">すべて</button>
+        <button class="search-tab" onclick="tabSwitch(this)">個室</button>
+        <button class="search-tab" onclick="tabSwitch(this)">コワーキング</button>
+        <button class="search-tab" onclick="tabSwitch(this)">シェア</button>
+        <button class="search-tab" onclick="tabSwitch(this)">バーチャル</button>
+      </div>
+      <div class="search-row">
+        <select class="search-select">
+          <option>📍 エリアを選ぶ</option>
+          <option>渋谷・恵比寿</option>
+          <option>新宿・西新宿</option>
+          <option>丸の内・大手町</option>
+          <option>銀座・有楽町</option>
+          <option>品川・五反田</option>
+          <option>秋葉原・神田</option>
+          <option>池袋・目白</option>
+        </select>
+        <select class="search-select">
+          <option>👥 人数を選ぶ</option>
+          <option>1名</option>
+          <option>2〜5名</option>
+          <option>6〜10名</option>
+          <option>11名以上</option>
+        </select>
+      </div>
+      <button class="search-btn-full" onclick="showPage('list')">🔍 この条件で検索する</button>
+    </div>
+  </div>
+
+  <!-- TYPE -->
+  <div class="section">
+    <div class="sec-head">
+      <h2 class="sec-title">タイプから<span>探す</span></h2>
+    </div>
+    <div class="type-row">
+      <div class="type-card" onclick="showPage('list')">
+        <div class="type-icon">🏢</div>
+        <div class="type-name">レンタルオフィス</div>
+        <div class="type-count">583件</div>
+      </div>
+      <div class="type-card" onclick="showPage('list')">
+        <div class="type-icon">💻</div>
+        <div class="type-name">コワーキング</div>
+        <div class="type-count">342件</div>
+      </div>
+      <div class="type-card" onclick="showPage('list')">
+        <div class="type-icon">🤝</div>
+        <div class="type-name">シェアオフィス</div>
+        <div class="type-count">198件</div>
+      </div>
+      <div class="type-card" onclick="showPage('list')">
+        <div class="type-icon">📬</div>
+        <div class="type-name">バーチャル</div>
+        <div class="type-count">120件</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AREA -->
+  <div class="section" style="padding-top:0;">
+    <div class="sec-head">
+      <h2 class="sec-title">エリアから<span>探す</span></h2>
+    </div>
+    <div class="area-scroll">
+      <div class="area-chip active" onclick="showPage('list')">渋谷・恵比寿 <small>154</small></div>
+      <div class="area-chip" onclick="showPage('list')">新宿・西新宿 <small>128</small></div>
+      <div class="area-chip" onclick="showPage('list')">丸の内・大手町 <small>96</small></div>
+      <div class="area-chip" onclick="showPage('list')">銀座・有楽町 <small>87</small></div>
+      <div class="area-chip" onclick="showPage('list')">品川・五反田 <small>75</small></div>
+      <div class="area-chip" onclick="showPage('list')">池袋・目白 <small>62</small></div>
+      <div class="area-chip" onclick="showPage('list')">秋葉原・神田 <small>58</small></div>
+      <div class="area-chip" onclick="showPage('list')">六本木・麻布 <small>49</small></div>
+    </div>
+  </div>
+
+  <!-- FEATURED -->
+  <div class="section" style="padding-top:0;">
+    <div class="sec-head">
+      <h2 class="sec-title">おすすめ<span>物件</span></h2>
+      <a class="sec-more" onclick="showPage('list')">もっと見る →</a>
+    </div>
+    <div class="card-scroll" id="home-featured"></div>
+  </div>
+
+  <!-- NEW -->
+  <div style="background:white;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="section">
+      <div class="sec-head">
+        <h2 class="sec-title">新着<span>物件</span></h2>
+        <a class="sec-more" onclick="showPage('list')">もっと見る →</a>
+      </div>
+      <div class="card-list" id="home-new"></div>
+    </div>
+  </div>
+
+  <!-- WHY -->
+  <div class="section">
+    <div class="sec-head"><h2 class="sec-title">選ばれる<span>理由</span></h2></div>
+    <div class="feature-list">
+      <div class="feature-item">
+        <div class="feature-icon">🆓</div>
+        <div class="feature-text">
+          <h4>仲介手数料 完全無料</h4>
+          <p>問い合わせ・契約時に利用者からの手数料は一切いただきません。</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">📸</div>
+        <div class="feature-text">
+          <h4>写真・設備情報が充実</h4>
+          <p>内見前でもオフィスの雰囲気・設備がわかる詳細な写真と情報を掲載。</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-text">
+          <h4>リアルタイムで空室確認</h4>
+          <p>最新の空室状況をリアルタイムで確認。即日問い合わせが可能です。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">OfficeBase</div>
+    <p class="footer-desc">東京都内のレンタルオフィス・コワーキングスペース・バーチャルオフィスを一括検索できるポータルサイト。1名から入居可能な物件を多数掲載。</p>
+    <div class="footer-links">
+      <a href="#">エリアから探す</a>
+      <a href="#">掲載のご案内</a>
+      <a href="#">タイプから探す</a>
+      <a href="#">コラム</a>
+      <a href="#">よくある質問</a>
+      <a href="#">会社概要</a>
+      <a href="#">プライバシーポリシー</a>
+      <a href="#">利用規約</a>
+    </div>
+    <div class="footer-bottom">© 2025 OfficeBase. All rights reserved.</div>
+  </footer>
+</div>
+
+<!-- ══════════ LIST ══════════ -->
+<div class="page pb-safe" id="page-list">
+  <div class="list-topbar">
+    <span class="result-count">583件</span>
+    <div class="filter-scroll">
+      <button class="filter-chip active">すべて</button>
+      <button class="filter-chip" onclick="this.classList.toggle('active')">個室</button>
+      <button class="filter-chip" onclick="this.classList.toggle('active')">コワーキング</button>
+      <button class="filter-chip" onclick="this.classList.toggle('active')">空室のみ</button>
+      <button class="filter-chip" onclick="this.classList.toggle('active')">¥3万以下</button>
+      <button class="filter-chip" onclick="this.classList.toggle('active')">24h利用可</button>
+    </div>
+    <div class="filter-icon-btn" onclick="openDrawer()">⚙️</div>
+  </div>
+  <div class="list-content">
+    <div class="card-list" id="list-cards"></div>
+  </div>
+</div>
+
+<!-- FILTER DRAWER -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="filter-drawer" id="filter-drawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-title">絞り込み条件</div>
+  <div class="drawer-section">
+    <div class="drawer-sec-title">オフィスタイプ</div>
+    <div class="drawer-chips">
+      <button class="drawer-chip active" onclick="this.classList.toggle('active')">レンタルオフィス</button>
+      <button class="drawer-chip active" onclick="this.classList.toggle('active')">コワーキング</button>
+      <button class="drawer-chip" onclick="this.classList.toggle('active')">シェアオフィス</button>
+      <button class="drawer-chip" onclick="this.classList.toggle('active')">バーチャル</button>
+    </div>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-sec-title">月額料金</div>
+    <div class="price-row">
+      <input class="price-input" type="number" placeholder="下限 ¥">
+      <input class="price-input" type="number" placeholder="上限 ¥">
+    </div>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-sec-title">エリア</div>
+    <div class="drawer-chips">
+      <button class="drawer-chip active" onclick="this.classList.toggle('active')">渋谷・恵比寿</button>
+      <button class="drawer-chip active" onclick="this.classList.toggle('active')">新宿・西新宿</button>
+      <button class="drawer-chip" onclick="this.classList.toggle('active')">丸の内・大手町</button>
+      <button class="drawer-chip" onclick="this.classList.toggle('active')">銀座・有楽町</button>
+      <button class="drawer-chip" onclick="this.classList.toggle('active')">品川・五反田</button>
+      <button class="drawer-chip" onclick="this.classList.toggle('active')">秋葉原・神田</button>
+    </div>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-sec-title">設備・サービス</div>
+    <div class="drawer-chips">
+      <button class="drawer-chip" onclick="this.classList.toggle('active')">Wi-Fi完備</button>
+      <button class="drawer-chip" onclick="this.classList.toggle('active')">会議室あり</button>
+      <button class="drawer-chip" onclick="this.classList.toggle('active')">24時間利用可</button>
+      <button class="drawer-chip" onclick="this.classList.toggle('active')">受付スタッフ</button>
+      <button class="drawer-chip" onclick="this.classList.toggle('active')">個別空調</button>
+      <button class="drawer-chip" onclick="this.classList.toggle('active')">駐車場あり</button>
+    </div>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-sec-title">入居人数</div>
+    <div class="drawer-chips">
+      <button class="drawer-chip active" onclick="this.classList.toggle('active')">1名</button>
+      <button class="drawer-chip active" onclick="this.classList.toggle('active')">2〜5名</button>
+      <button class="drawer-chip" onclick="this.classList.toggle('active')">6〜10名</button>
+      <button class="drawer-chip" onclick="this.classList.toggle('active')">11名以上</button>
+    </div>
+  </div>
+  <button class="drawer-apply" onclick="closeDrawer();showToast('条件を適用しました')">この条件で検索する</button>
+</div>
+
+<!-- ══════════ DETAIL ══════════ -->
+<div class="page" id="page-detail" style="padding-bottom:80px;">
+  <div class="detail-back" onclick="showPage('list')">← 一覧に戻る</div>
+
+  <div class="detail-gallery-wrap">
+    <div class="gallery-main-img" id="g-main">🏢</div>
+    <div class="gallery-thumbs">
+      <div class="g-thumb active" onclick="setThumb(this,'🏢')">🏢</div>
+      <div class="g-thumb" onclick="setThumb(this,'🪑')">🪑</div>
+      <div class="g-thumb" onclick="setThumb(this,'📋')">📋</div>
+      <div class="g-thumb" onclick="setThumb(this,'☕')">☕</div>
+    </div>
+  </div>
+
+  <div class="detail-main">
+    <div class="detail-badges">
+      <span class="d-badge" id="d-type-badge">レンタルオフィス</span>
+      <span class="d-badge d-badge-warm">空室あり</span>
+      <span class="d-badge">24時間利用可</span>
+    </div>
+    <h1 class="detail-name" id="d-name"></h1>
+    <div class="detail-addr">📍 <span id="d-addr"></span></div>
+
+    <div class="detail-highlights">
+      <div class="hl-box">
+        <div class="hl-icon">👥</div>
+        <div class="hl-label">入居人数</div>
+        <div class="hl-val" id="d-cap"></div>
+      </div>
+      <div class="hl-box">
+        <div class="hl-icon">📐</div>
+        <div class="hl-label">面積</div>
+        <div class="hl-val" id="d-sqm"></div>
+      </div>
+      <div class="hl-box">
+        <div class="hl-icon">🚉</div>
+        <div class="hl-label">最寄り駅</div>
+        <div class="hl-val" id="d-sta"></div>
+      </div>
+    </div>
+
+    <div class="detail-sec">
+      <div class="detail-sec-title">物件概要</div>
+      <p class="detail-desc" id="d-desc"></p>
+    </div>
+
+    <div class="detail-sec">
+      <div class="detail-sec-title">設備・サービス</div>
+      <div class="amenity-grid" id="d-amenities"></div>
+    </div>
+
+    <div class="detail-sec">
+      <div class="detail-sec-title">料金プラン</div>
+      <div class="plan-cards" id="d-plans"></div>
+    </div>
+
+    <div class="detail-sec">
+      <div class="detail-sec-title">アクセス</div>
+      <ul class="access-list" id="d-access"></ul>
+      <div class="map-ph">🗺 地図（Googleマップ連携予定）</div>
+    </div>
+
+    <div class="detail-sec">
+      <div class="detail-sec-title">口コミ・評価</div>
+      <div id="d-reviews"></div>
+    </div>
+  </div>
+
+  <!-- STICKY CTA -->
+  <div class="sticky-cta">
+    <div class="cta-price-block">
+      <div class="cta-price-from">月額</div>
+      <div class="cta-price-big" id="cta-price-big"></div>
+      <div class="cta-price-mo">〜/月</div>
+    </div>
+    <div class="cta-btns">
+      <button class="cta-btn-main" onclick="openSheet()">📅 内覧予約</button>
+      <button class="cta-btn-sub" onclick="showToast('お気に入りに追加しました 🔖')">🔖</button>
+    </div>
+  </div>
+</div>
+
+<!-- INFO SHEET -->
+<div class="drawer-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
+<div class="info-sheet" id="info-sheet">
+  <div class="drawer-handle"></div>
+  <div class="info-sheet-inner">
+    <div class="info-avail">
+      <div class="avail-dot"></div>
+      <span class="avail-text">現在 空室あり — 即日入居可能</span>
+    </div>
+    <button class="sheet-btn-full" onclick="closeSheet();showToast('内覧予約フォームを開きました！')">📅 内覧を予約する（無料）</button>
+    <button class="sheet-btn-outline" onclick="closeSheet();showToast('お問い合わせフォームを開きました！')">📧 メールで問い合わせ</button>
+    <p class="sheet-note">✓ 仲介手数料無料　✓ 通常24時間以内に返信</p>
+    <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;">
+    <div class="info-section">
+      <div class="info-label">電話で問い合わせ</div>
+      <a href="tel:0300000000" class="info-tel">03-XXXX-XXXX</a>
+      <div class="info-hours">平日 9:00〜17:30</div>
+    </div>
+    <div class="info-section">
+      <div class="info-label">基本情報</div>
+      <div class="info-row"><span class="info-key">敷金・礼金</span><span class="info-val">不要</span></div>
+      <div class="info-row"><span class="info-key">入居可能日</span><span class="info-val">即日〜</span></div>
+      <div class="info-row"><span class="info-key">最短契約期間</span><span class="info-val">1ヶ月〜</span></div>
+      <div class="info-row"><span class="info-key">契約形態</span><span class="info-val">月次更新</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM TAB -->
+<nav class="bottom-tab">
+  <button class="tab-btn active" id="tab-home" onclick="tabNav('home')">
+    <span class="tab-icon">🏠</span>
+    <span class="tab-label">ホーム</span>
+  </button>
+  <button class="tab-btn" id="tab-list" onclick="tabNav('list')">
+    <span class="tab-icon">🔍</span>
+    <span class="tab-label">検索</span>
+  </button>
+  <button class="tab-btn" id="tab-fav" onclick="showToast('お気に入り機能は準備中です')">
+    <span class="tab-icon">🔖</span>
+    <span class="tab-label">保存済み</span>
+  </button>
+  <button class="tab-btn" id="tab-mypage" onclick="showToast('マイページは準備中です')">
+    <span class="tab-icon">👤</span>
+    <span class="tab-label">マイページ</span>
+  </button>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const offices=[
+  {id:1,name:'グレースオフィス渋谷',area:'渋谷区',station:'渋谷駅 徒歩3分',type:'レンタルオフィス',price:28000,capacity:'1〜10名',sqm:'6〜30㎡',icon:'🏢',badge:'人気',badgeStyle:'',
+   desc:'渋谷駅から徒歩3分。ガラス張りの近代的なビルに入居した高品質なレンタルオフィス。個室からセミプライベートまで多様なプランをご用意。受付スタッフが常駐し、来客対応も安心です。',
+   amenities:['Wi-Fi完備','会議室利用可','受付常駐','個別空調','コンビニ徒歩1分','駐輪場あり','24時間利用可','複合機完備','ロッカー完備','電話転送'],
+   plans:[{name:'Sプラン（1名）',pax:'1名',price:'¥28,000',init:'¥28,000',min:'1ヶ月'},{name:'Mプラン（2名）',pax:'2名',price:'¥48,000',init:'¥48,000',min:'1ヶ月'},{name:'Lプラン（5名）',pax:'5名',price:'¥98,000',init:'¥96,000',min:'3ヶ月'}],
+   access:['渋谷駅（JR山手線）から徒歩3分','渋谷駅（東急東横線）から徒歩4分','表参道駅（銀座線）から徒歩8分'],
+   reviews:[{name:'田中 K.',stars:'★★★★★',date:'2025年3月',text:'駅から近く、スタッフも親切で大変使いやすいオフィスです。会議室も予約しやすく重宝しています。'},{name:'山田 M.',stars:'★★★★☆',date:'2025年1月',text:'渋谷という好立地で料金も比較的リーズナブル。設備もしっかりしており快適です。'}]},
+  {id:2,name:'スカイワークス新宿',area:'新宿区',station:'新宿駅 徒歩5分',type:'コワーキング',price:12000,capacity:'1名〜',sqm:'フリーデスク',icon:'💻',badge:'新着',badgeStyle:'card-badge-warm',
+   desc:'新宿駅から徒歩5分のコワーキングスペース。24時間365日利用可能で、フリーランスや副業の方に最適。高速Wi-Fiと静かな作業環境をご提供します。',
+   amenities:['高速Wi-Fi','24時間利用可','電源完備','ロッカー','会議室（別途）','ドリンク無料','複合機無料','郵便受取'],
+   plans:[{name:'ドロップイン',pax:'1名',price:'¥500/時間',init:'なし',min:'1時間〜'},{name:'月額スタンダード',pax:'1名',price:'¥12,000',init:'¥12,000',min:'1ヶ月'},{name:'法人プラン',pax:'3名まで',price:'¥28,000',init:'¥30,000',min:'3ヶ月'}],
+   access:['新宿駅（JR各線）から徒歩5分','新宿三丁目駅（丸ノ内線）から徒歩3分'],
+   reviews:[{name:'鈴木 T.',stars:'★★★★★',date:'2025年4月',text:'24時間使えるのが最高。ドリンク無料でコスパも抜群です。'}]},
+  {id:3,name:'プレミアムオフィス丸の内',area:'千代田区',station:'東京駅 直結',type:'レンタルオフィス',price:85000,capacity:'1〜20名',sqm:'10〜80㎡',icon:'🏙',badge:'プレミアム',badgeStyle:'',
+   desc:'東京駅直結の一流ビルに入居したハイグレードなサービスオフィス。秘書サービスや来客応対も充実。国際的なビジネスシーンにも対応できる最高品質の環境をご提供します。',
+   amenities:['秘書サービス','来客対応','完全個室','個別空調','会議室無料','ラウンジ','コンシェルジュ','24Hセキュリティ','コーヒー無料','国際電話対応'],
+   plans:[{name:'エグゼクティブS',pax:'1〜2名',price:'¥85,000',init:'¥85,000',min:'3ヶ月'},{name:'エグゼクティブM',pax:'3〜5名',price:'¥148,000',init:'¥148,000',min:'3ヶ月'},{name:'エグゼクティブL',pax:'6〜10名',price:'¥250,000',init:'¥250,000',min:'6ヶ月'}],
+   access:['東京駅（JR各線）直結','大手町駅（各線）から徒歩3分'],
+   reviews:[{name:'大野 H.',stars:'★★★★★',date:'2025年2月',text:'海外クライアントを迎える際にも恥ずかしくない最高品質のオフィスです。'}]},
+  {id:4,name:'ビジネスハブ品川',area:'品川区',station:'品川駅 徒歩2分',type:'シェアオフィス',price:18000,capacity:'1〜5名',sqm:'4〜25㎡',icon:'🤝',badge:'',badgeStyle:'',
+   desc:'品川駅から徒歩2分のアクセス抜群なシェアオフィス。新幹線出張の多いビジネスマンに最適。個室と共用スペースを組み合わせた柔軟なプランをご用意しています。',
+   amenities:['Wi-Fi完備','会議室','ロッカー','郵便受取','複合機無料','受付対応','駐車場連携','シャワー室'],
+   plans:[{name:'ソロプラン',pax:'1名',price:'¥18,000',init:'¥18,000',min:'1ヶ月'},{name:'デュオプラン',pax:'2名',price:'¥32,000',init:'¥32,000',min:'1ヶ月'}],
+   access:['品川駅（JR各線）から徒歩2分','品川駅（京急）から徒歩3分'],
+   reviews:[{name:'伊藤 R.',stars:'★★★★☆',date:'2025年3月',text:'新幹線利用が多いので品川は最高の立地。スタッフも親切です。'}]},
+  {id:5,name:'クリエイターズオフィス秋葉原',area:'台東区',station:'秋葉原駅 徒歩4分',type:'コワーキング',price:9800,capacity:'1名〜',sqm:'フリーデスク',icon:'💡',badge:'新着',badgeStyle:'card-badge-warm',
+   desc:'ITエンジニア・クリエイター向けに設計されたコワーキング。超高速ネットとモニター貸出など、テクノロジーワーカーに最適な設備を完備。',
+   amenities:['超高速Wi-Fi 1Gbps','モニター貸出','半個室ブース','Zoomブース','24時間利用可','エナジードリンク無料','ゲーミングチェア','ケーブル類完備'],
+   plans:[{name:'ドロップイン',pax:'1名',price:'¥400/時間',init:'なし',min:'1時間〜'},{name:'月額スタンダード',pax:'1名',price:'¥9,800',init:'¥10,000',min:'1ヶ月'}],
+   access:['秋葉原駅（JR各線）から徒歩4分','末広町駅（銀座線）から徒歩2分'],
+   reviews:[{name:'松田 Y.',stars:'★★★★★',date:'2025年4月',text:'エンジニアとして最高の環境。回線が速くモニターも借りられ作業効率が上がります。'}]},
+  {id:6,name:'ガーデンオフィス恵比寿',area:'渋谷区',station:'恵比寿駅 徒歩6分',type:'レンタルオフィス',price:35000,capacity:'1〜8名',sqm:'8〜40㎡',icon:'🌿',badge:'人気',badgeStyle:'',
+   desc:'恵比寿駅から徒歩6分、緑豊かな環境のデザイナーズオフィス。白を基調とした明るいインテリアと自然光たっぷりの空間が特徴です。',
+   amenities:['Wi-Fi完備','会議室','個別空調','緑化スペース','テラスあり','受付対応','複合機無料','コーヒーサービス'],
+   plans:[{name:'ガーデンS',pax:'1〜2名',price:'¥35,000',init:'¥35,000',min:'3ヶ月'},{name:'ガーデンM',pax:'3〜5名',price:'¥65,000',init:'¥65,000',min:'3ヶ月'}],
+   access:['恵比寿駅（JR山手線）から徒歩6分','恵比寿駅（日比谷線）から徒歩6分'],
+   reviews:[{name:'高橋 S.',stars:'★★★★★',date:'2025年1月',text:'自然光が差し込む明るい空間で仕事へのモチベーションが上がります。テラスでランチも最高です。'}]},
+];
+
+const bgs=['#e8f4ef','#e6f1fb','#fdf3eb','#fbeaf0','#eaf3de','#faeeda'];
+
+function renderCard(o,onclick,horizontal=true){
+  if(horizontal){
+    return `<div class="office-card" onclick="${onclick}">
+      <div class="card-thumb" style="background:${bgs[(o.id-1)%6]}">
+        <span style="font-size:40px">${o.icon}</span>
+        ${o.badge?`<span class="card-badge ${o.badgeStyle}">${o.badge}</span>`:''}
+      </div>
+      <div class="card-body">
+        <div class="card-area">📍 ${o.area} · ${o.station}</div>
+        <div class="card-name">${o.name}</div>
+        <div class="card-tags">
+          <span class="tag tag-green">${o.type}</span>
+          <span class="tag">${o.capacity}</span>
+        </div>
+        <div class="card-price-row">
+          <div><span class="card-price-num">¥${o.price.toLocaleString()}</span><span class="card-price-unit">〜/月</span></div>
+          <div class="card-avail"><span class="dot-green"></span>空室あり</div>
+        </div>
+      </div>
+    </div>`;
+  } else {
+    return `<div class="office-card" style="flex-direction:column" onclick="${onclick}">
+      <div class="card-thumb" style="width:100%;height:120px;background:${bgs[(o.id-1)%6]}">
+        <span style="font-size:40px">${o.icon}</span>
+        ${o.badge?`<span class="card-badge ${o.badgeStyle}">${o.badge}</span>`:''}
+      </div>
+      <div class="card-body">
+        <div class="card-area">📍 ${o.area} · ${o.station}</div>
+        <div class="card-name">${o.name}</div>
+        <div class="card-tags">
+          <span class="tag tag-green">${o.type}</span>
+          <span class="tag">${o.capacity}</span>
+        </div>
+        <div class="card-price-row">
+          <div><span class="card-price-num">¥${o.price.toLocaleString()}</span><span class="card-price-unit">〜/月</span></div>
+          <div class="card-avail"><span class="dot-green"></span>空室あり</div>
+        </div>
+      </div>
+    </div>`;
+  }
+}
+
+// init cards
+const sc = document.getElementById('home-featured');
+sc.innerHTML = offices.slice(0,4).map(o=>`<div style="flex-shrink:0;width:200px;">${renderCard(o,`showDetail(${o.id})`,false)}</div>`).join('');
+
+document.getElementById('home-new').innerHTML = offices.slice(2,6).map(o=>renderCard(o,`showDetail(${o.id})`)).join('');
+document.getElementById('list-cards').innerHTML = offices.map(o=>renderCard(o,`showDetail(${o.id})`)).join('');
+
+function showDetail(id){
+  const o=offices.find(x=>x.id===id);
+  document.getElementById('g-main').textContent=o.icon;
+  document.getElementById('d-name').textContent=o.name;
+  document.getElementById('d-addr').textContent=`${o.area} · ${o.station}`;
+  document.getElementById('d-cap').textContent=o.capacity;
+  document.getElementById('d-sqm').textContent=o.sqm;
+  document.getElementById('d-sta').textContent=o.station.split(' ')[0];
+  document.getElementById('d-type-badge').textContent=o.type;
+  document.getElementById('d-desc').textContent=o.desc;
+  document.getElementById('cta-price-big').textContent=`¥${o.price.toLocaleString()}`;
+
+  document.getElementById('d-amenities').innerHTML=o.amenities.map(a=>`<div class="amenity">✓ ${a}</div>`).join('');
+
+  document.getElementById('d-plans').innerHTML=o.plans.map(p=>`
+    <div class="plan-card">
+      <div class="plan-name">${p.name}</div>
+      <div class="plan-row"><span class="plan-label">入居人数</span><span>${p.pax}</span></div>
+      <div class="plan-row"><span class="plan-label">月額料金</span><span class="plan-price">${p.price}</span></div>
+      <div class="plan-row"><span class="plan-label">初期費用</span><span>${p.init}</span></div>
+      <div class="plan-row"><span class="plan-label">最短契約</span><span>${p.min}</span></div>
+    </div>`).join('');
+
+  document.getElementById('d-access').innerHTML=o.access.map(a=>`<li class="access-item"><span class="access-dot">🚉</span>${a}</li>`).join('');
+
+  document.getElementById('d-reviews').innerHTML=o.reviews.map(r=>`
+    <div class="review-card">
+      <div class="review-head">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="review-avatar">${r.name[0]}</div>
+          <span style="font-size:13px;font-weight:700;">${r.name}</span>
+        </div>
+        <div style="text-align:right;">
+          <div class="review-stars">${r.stars}</div>
+          <div class="review-date">${r.date}</div>
+        </div>
+      </div>
+      <p class="review-text">${r.text}</p>
+    </div>`).join('');
+
+  document.querySelectorAll('.g-thumb').forEach((el,i)=>el.classList.toggle('active',i===0));
+  showPage('detail');
+}
+
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  window.scrollTo(0,0);
+  // update tabs
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const t=document.getElementById('tab-'+name);
+  if(t)t.classList.add('active');
+  // hide sticky cta if not detail
+  const cta=document.querySelector('.sticky-cta');
+  if(cta)cta.style.display=(name==='detail')?'flex':'none';
+}
+
+function tabNav(name){
+  if(name==='list'||name==='home')showPage(name);
+}
+
+function tabSwitch(el){
+  document.querySelectorAll('.search-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function setThumb(el,icon){
+  document.querySelectorAll('.g-thumb').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('g-main').textContent=icon;
+}
+
+function openDrawer(){
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.getElementById('filter-drawer').classList.add('open');
+}
+function closeDrawer(){
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.getElementById('filter-drawer').classList.remove('open');
+}
+function openSheet(){
+  document.getElementById('sheet-overlay').classList.add('open');
+  document.getElementById('info-sheet').classList.add('open');
+}
+function closeSheet(){
+  document.getElementById('sheet-overlay').classList.remove('open');
+  document.getElementById('info-sheet').classList.remove('open');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// init
+showPage('home');
+</script>
+</body>
+</html>
